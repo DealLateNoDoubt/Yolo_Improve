@@ -540,7 +540,7 @@ def check_imshow(warn=False):
         if LINUX:
             assert not IS_COLAB and not IS_KAGGLE
             assert "DISPLAY" in os.environ, "The DISPLAY environment variable isn't set."
-        cv2.imshow("test", np.zeros((8, 8, 3), dtype=np.uint8))  # show a small 8-pixel image
+        cv2.imshow("create_self_data", np.zeros((8, 8, 3), dtype=np.uint8))  # show a small 8-pixel image
         cv2.waitKey(1)
         cv2.destroyAllWindows()
         cv2.waitKey(1)

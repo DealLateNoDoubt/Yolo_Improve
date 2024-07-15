@@ -530,7 +530,7 @@ class BaseTrainer:
         except Exception as e:
             raise RuntimeError(emojis(f"Dataset '{clean_url(self.args.data)}' error ❌ {e}")) from e
         self.data = data
-        return data["train"], data.get("val") or data.get("test")
+        return data["train"], data.get("val") or data.get("create_self_data")
 
     def setup_model(self):
         """Load/create/download model for any task."""
@@ -563,7 +563,7 @@ class BaseTrainer:
 
     def validate(self):
         """
-        Runs validation on test set using self.validator.
+        Runs validation on create_self_data set using self.validator.
 
         The returned dict is expected to contain "fitness" key.
         """

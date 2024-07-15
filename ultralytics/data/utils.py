@@ -305,7 +305,7 @@ def check_det_dataset(dataset, autodownload=True):
 
     # Set paths
     data["path"] = path  # download scripts
-    for k in "train", "val", "test", "minival":
+    for k in "train", "val", "create_self_data", "minival":
         if data.get(k):  # prepend path
             if isinstance(data[k], str):
                 x = (path / data[k]).resolve()
@@ -353,13 +353,13 @@ def check_cls_dataset(dataset, split=""):
 
     Args:
         dataset (str | Path): The name of the dataset.
-        split (str, optional): The split of the dataset. Either 'val', 'test', or ''. Defaults to ''.
+        split (str, optional): The split of the dataset. Either 'val', 'create_self_data', or ''. Defaults to ''.
 
     Returns:
         (dict): A dictionary containing the following keys:
             - 'train' (Path): The directory path containing the training set of the dataset.
             - 'val' (Path): The directory path containing the validation set of the dataset.
-            - 'test' (Path): The directory path containing the test set of the dataset.
+            - 'create_self_data' (Path): The directory path containing the create_self_data set of the dataset.
             - 'nc' (int): The number of classes in the dataset.
             - 'names' (dict): A dictionary of class names in the dataset.
     """
@@ -390,19 +390,19 @@ def check_cls_dataset(dataset, split=""):
         else data_dir / "validation"
         if (data_dir / "validation").exists()
         else None
-    )  # data/test or data/val
-    test_set = data_dir / "test" if (data_dir / "test").exists() else None  # data/val or data/test
+    )  # data/create_self_data or data/val
+    test_set = data_dir / "create_self_data" if (data_dir / "create_self_data").exists() else None  # data/val or data/create_self_data
     if split == "val" and not val_set:
-        LOGGER.warning("WARNING ⚠️ Dataset 'split=val' not found, using 'split=test' instead.")
-    elif split == "test" and not test_set:
-        LOGGER.warning("WARNING ⚠️ Dataset 'split=test' not found, using 'split=val' instead.")
+        LOGGER.warning("WARNING ⚠️ Dataset 'split=val' not found, using 'split=create_self_data' instead.")
+    elif split == "create_self_data" and not test_set:
+        LOGGER.warning("WARNING ⚠️ Dataset 'split=create_self_data' not found, using 'split=val' instead.")
 
     nc = len([x for x in (data_dir / "train").glob("*") if x.is_dir()])  # number of classes
     names = [x.name for x in (data_dir / "train").iterdir() if x.is_dir()]  # class names list
     names = dict(enumerate(sorted(names)))
 
     # Print to console
-    for k, v in {"train": train_set, "val": val_set, "test": test_set}.items():
+    for k, v in {"train": train_set, "val": val_set, "create_self_data": test_set}.items():
         prefix = f'{colorstr(f"{k}:")} {v}...'
         if v is None:
             LOGGER.info(prefix)
@@ -420,7 +420,7 @@ def check_cls_dataset(dataset, split=""):
             else:
                 LOGGER.info(f"{prefix} found {nf} images in {nd} classes ✅ ")
 
-    return {"train": train_set, "val": val_set, "test": test_set, "nc": nc, "names": names}
+    return {"train": train_set, "val": val_set, "create_self_data": test_set, "nc": nc, "names": names}
 
 
 class HUBDatasetStats:
@@ -508,7 +508,7 @@ class HUBDatasetStats:
             zipped = zip(labels["cls"], coordinates)
             return [[int(c[0]), *(round(float(x), 4) for x in points)] for c, points in zipped]
 
-        for split in "train", "val", "test":
+        for split in "train", "val", "create_self_data":
             self.stats[split] = None  # predefine
             path = self.data.get(split)
 
@@ -570,7 +570,7 @@ class HUBDatasetStats:
         from ultralytics.data import YOLODataset  # ClassificationDataset
 
         self.im_dir.mkdir(parents=True, exist_ok=True)  # makes dataset-hub/images/
-        for split in "train", "val", "test":
+        for split in "train", "val", "create_self_data":
             if self.data.get(split) is None:
                 continue
             dataset = YOLODataset(img_path=self.data[split], data=self.data)
@@ -621,11 +621,11 @@ def compress_one_image(f, f_new=None, max_dim=1920, quality=50):
 
 def autosplit(path=DATASETS_DIR / "coco8/images", weights=(0.9, 0.1, 0.0), annotated_only=False):
     """
-    Automatically split a dataset into train/val/test splits and save the resulting splits into autosplit_*.txt files.
+    Automatically split a dataset into train/val/create_self_data splits and save the resulting splits into autosplit_*.txt files.
 
     Args:
         path (Path, optional): Path to images directory. Defaults to DATASETS_DIR / 'coco8/images'.
-        weights (list | tuple, optional): Train, validation, and test split fractions. Defaults to (0.9, 0.1, 0.0).
+        weights (list | tuple, optional): Train, validation, and create_self_data split fractions. Defaults to (0.9, 0.1, 0.0).
         annotated_only (bool, optional): If True, only images with an associated txt file are used. Defaults to False.
 
     Example:

@@ -20,11 +20,6 @@ class GSConv(nn.Module):
     def forward(self, x):
         x1 = self.cv1(x)
         x2 = torch.cat((x1, self.cv2(x1)), 1)
-        # shuffle
-        # y = x2.reshape(x2.shape[0], 2, x2.shape[1] // 2, x2.shape[2], x2.shape[3])
-        # y = y.permute(0, 2, 1, 3, 4)
-        # return y.reshape(y.shape[0], -1, y.shape[3], y.shape[4])
-
         b, n, h, w = x2.size()
         b_n = b * n // 2
         y = x2.reshape(b_n, 2, h * w)
