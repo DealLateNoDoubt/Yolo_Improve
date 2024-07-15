@@ -1,6 +1,10 @@
-import argparse
 
+import sys
+sys.path.append('../..')  # 添加上级父目录到搜索路径
+
+import argparse
 from ultralytics import YOLO
+
 
 
 def train(opt):
@@ -12,7 +16,6 @@ def train(opt):
         imgsz=opt.imgsz,
         epochs=opt.epochs,
         optimizer=opt.optimizer,
-        name="Improve_1"
     )
 
 
@@ -23,7 +26,6 @@ def val(opt):
         split="val",
         imgsz=opt.imgsz,
         batch=opt.batch,
-        name="Improve_1"
     )
 
 
@@ -33,7 +35,6 @@ def predict(opt):
         source=opt.predict_source,
         imgsz=opt.imgsz,
         save=True,  # 保存预测结果
-        name="Improve_1"
     )
 
 
@@ -46,9 +47,9 @@ if __name__ == "__main__":
     parser.add_argument("--best_weights", type=str, default="../runs/pose/train/weights/best.pt")
 
     # other
-    parser.add_argument("--model", type=str, default="yolov8m-pose-bifpn.yaml")
+    parser.add_argument("--model", type=str, default="yolov8m-pose.yaml")
     parser.add_argument("--optimizer", type=str, default="SGD")
-    parser.add_argument("--data", type=str, default="coco-pose.yaml")
+    parser.add_argument("--data", type=str, default="coco8-pose.yaml")
     parser.add_argument("--predict_source", type=str, default="../datasets/pose_test")
 
     parser.add_argument("--epochs", type=int, default=1)

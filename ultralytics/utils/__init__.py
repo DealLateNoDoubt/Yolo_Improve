@@ -694,7 +694,7 @@ IS_RASPBERRYPI = is_raspberrypi()
 GIT_DIR = get_git_dir()
 IS_GIT_DIR = is_git_dir()
 USER_CONFIG_DIR = Path(os.getenv("YOLO_CONFIG_DIR") or get_user_config_dir())  # Ultralytics settings dir
-SETTINGS_YAML = "../main_scripts/settings.yaml"     # 自定义settings.yaml
+SETTINGS_YAML = "../scripts/settings.yaml"     # 自定义settings.yaml
 
 
 def colorstr(*input):
